@@ -1,0 +1,22 @@
+---
+- name: Create container
+  docker_container:
+    image: hello-world
+    name: "{{ cname_prefix }}hi"
+    state: present
+
+- name: Start container
+  docker_container:
+    name: "{{ cname_prefix }}hi"
+    state: started
+
+- name: Stop container
+  docker_container:
+    image: hello-world
+    name: "{{ cname_prefix }}hi"
+    state: present
+
+- name: Remove container
+  docker_container:
+    name: "{{ cname_prefix }}hi"
+    state: absent

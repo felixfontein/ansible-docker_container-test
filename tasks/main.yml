@@ -1,0 +1,11 @@
+---
+- name: Create random container name prefix
+  set_fact:
+    cname_prefix: "{{ 'ansible-test-%0x' % ((2**32) | random) }}"
+
+- debug:
+    msg: "Using container name prefix {{ cname_prefix }}"
+
+- include_tasks: "{{ item }}"
+  with_fileglob:
+  - "tests/*.yml"

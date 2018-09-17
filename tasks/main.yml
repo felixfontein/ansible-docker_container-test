@@ -17,4 +17,5 @@
     docker_container:
       name: "{{ item }}"
       state: absent
+      stop_timeout: 1
     with_items: "{{ cnames }}"

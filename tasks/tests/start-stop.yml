@@ -1,22 +1,27 @@
 ---
+- name: Registering container name
+  set_fact:
+    cname: "{{ cname_prefix ~ '-hi' }}"
+    cnames: "{{ cnames }} + [cname]"
+
 - name: Create container
   docker_container:
     image: hello-world
-    name: "{{ cname_prefix }}hi"
+    name: "{{ cname }}"
     state: present
 
 - name: Start container
   docker_container:
-    name: "{{ cname_prefix }}hi"
+    name: "{{ cname }}"
     state: started
 
 - name: Stop container
   docker_container:
     image: hello-world
-    name: "{{ cname_prefix }}hi"
+    name: "{{ cname }}"
     state: present
 
 - name: Remove container
   docker_container:
-    name: "{{ cname_prefix }}hi"
+    name: "{{ cname }}"
     state: absent

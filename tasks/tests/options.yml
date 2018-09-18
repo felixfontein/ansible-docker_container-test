@@ -63,6 +63,7 @@
     name: "{{ cname }}"
     state: started
     blkio_weight: 234
+    stop_timeout: 1
   register: blkio_weight_3
 
 - name: cleanup
@@ -126,6 +127,7 @@
     - setgid
     cap_drop:
     - all
+    stop_timeout: 1
   register: capabilities_4
 
 - name: cleanup
@@ -173,6 +175,7 @@
     command: '/bin/sh -c "sleep 10m"'
     name: "{{ cname }}"
     state: started
+    stop_timeout: 1
   register: command_3
 
 - name: cleanup
@@ -245,6 +248,7 @@
     name: "{{ cname }}"
     state: absent
     debug: yes
+    stop_timeout: 1
   register: debug_4
 
 - assert:
@@ -264,7 +268,62 @@
 ## devices #########################################################
 ####################################################################
 
-# TODO: - devices
+- name: devices
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    devices:
+    - "/dev/random:/dev/virt-random:rwm"
+    - "/dev/urandom:/dev/virt-urandom:rwm"
+  register: devices_1
+
+- name: devices (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    devices:
+    - "/dev/random:/dev/virt-random:rwm"
+    - "/dev/urandom:/dev/virt-urandom:rwm"
+  register: devices_2
+
+- name: devices (less)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    devices:
+    - "/dev/random:/dev/virt-random:rwm"
+  register: devices_3
+
+- name: devices (changed)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    devices:
+    - "/dev/random:/dev/virt-random:rwm"
+    - "/dev/null:/dev/virt-null:rwm"
+    stop_timeout: 1
+  register: devices_4
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - devices_1 is changed
+    - devices_2 is not changed
+    - devices_3 is not changed
+    - devices_4 is changed
 
 ####################################################################
 ## dns_opts ########################################################
@@ -276,19 +335,167 @@
 ## dns_search_domains ##############################################
 ####################################################################
 
-# TODO: - dns_search_domains
+- name: dns_search_domains
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    dns_search_domains:
+    - example.com
+    - example.org
+  register: dns_search_domains_1
+
+- name: dns_search_domains (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    dns_search_domains:
+    - example.com
+    - example.org
+  register: dns_search_domains_2
+
+- name: dns_search_domains (less)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    dns_search_domains:
+    - example.com
+  register: dns_search_domains_3
+
+- name: dns_search_domains (changed)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    dns_search_domains:
+    - example.com
+    - ansible.com
+    stop_timeout: 1
+  register: dns_search_domains_4
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - dns_search_domains_1 is changed
+    - dns_search_domains_2 is not changed
+    - dns_search_domains_3 is not changed
+    - dns_search_domains_4 is changed
 
 ####################################################################
 ## dns_servers #####################################################
 ####################################################################
 
-# TODO: - dns_servers
+- name: dns_servers
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    dns_servers:
+    - 1.1.1.1
+    - 8.8.8.8
+  register: dns_servers_1
+
+- name: dns_servers (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    dns_servers:
+    - 1.1.1.1
+    - 8.8.8.8
+  register: dns_servers_2
+
+- name: dns_servers (less)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    dns_servers:
+    - 1.1.1.1
+  register: dns_servers_3
+
+- name: dns_servers (changed)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    dns_servers:
+    - 1.1.1.1
+    - 9.9.9.9
+    stop_timeout: 1
+  register: dns_servers_4
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - dns_servers_1 is changed
+    - dns_servers_2 is not changed
+    - dns_servers_3 is not changed
+    - dns_servers_4 is changed
 
 ####################################################################
 ## domainname ######################################################
 ####################################################################
 
-# TODO: - domainname
+- name: domainname
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    domainname: example.com
+    state: started
+  register: domainname_1
+
+- name: domainname (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    domainname: example.com
+    state: started
+  register: domainname_2
+
+- name: domainname (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    domainname: example.org
+    state: started
+    stop_timeout: 1
+  register: domainname_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - domainname_1 is changed
+    - domainname_2 is not changed
+    - domainname_3 is changed
 
 ####################################################################
 ## entrypoint ######################################################
@@ -316,6 +523,7 @@
     entrypoint: '/bin/sh -c "sleep 10m"'
     name: "{{ cname }}"
     state: started
+    stop_timeout: 1
   register: entrypoint_3
 
 - name: cleanup
@@ -375,6 +583,7 @@
     env:
       TEST1: val1
       TEST3: val3
+    stop_timeout: 1
   register: env_4
 
 - name: cleanup
@@ -468,6 +677,7 @@
     etc_hosts:
       example.com: 1.2.3.4
       example.us: 1.2.3.5
+    stop_timeout: 1
   register: etc_hosts_4
 
 - name: cleanup
@@ -528,6 +738,7 @@
     exposed_ports:
     - 1234
     - 1235
+    stop_timeout: 1
   register: exposed_ports_4
 
 - name: cleanup
@@ -594,6 +805,7 @@
     groups:
     - 1234
     - 2345
+    stop_timeout: 1
   register: groups_4
 
 - name: cleanup
@@ -613,7 +825,45 @@
 ## hostname ########################################################
 ####################################################################
 
-# TODO: - hostname
+- name: hostname
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    hostname: me.example.com
+    state: started
+  register: hostname_1
+
+- name: hostname (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    hostname: me.example.com
+    state: started
+  register: hostname_2
+
+- name: hostname (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    hostname: me.example.org
+    state: started
+    stop_timeout: 1
+  register: hostname_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - hostname_1 is changed
+    - hostname_2 is not changed
+    - hostname_3 is changed
 
 ####################################################################
 ## init ############################################################
@@ -660,6 +910,7 @@
     image: hello-world
     name: "{{ cname }}"
     state: started
+    stop_timeout: 1
   register: image_change
 
 - name: cleanup
@@ -691,7 +942,45 @@
 ## kernel_memory ###################################################
 ####################################################################
 
-# TODO: - kernel_memory
+- name: kernel_memory
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    kernel_memory: 8M
+    state: started
+  register: kernel_memory_1
+
+- name: kernel_memory (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    kernel_memory: 8M
+    state: started
+  register: kernel_memory_2
+
+- name: kernel_memory (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    kernel_memory: 6M
+    state: started
+    stop_timeout: 1
+  register: kernel_memory_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - kernel_memory_1 is changed
+    - kernel_memory_2 is not changed
+    - kernel_memory_3 is changed
 
 ####################################################################
 ## kill_signal #####################################################
@@ -727,31 +1016,221 @@
 ## mac_address #####################################################
 ####################################################################
 
-# TODO: - mac_address
+- name: mac_address
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    mac_address: 92:d0:c6:0a:29:33
+    state: started
+  register: mac_address_1
+
+- name: mac_address (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    mac_address: 92:d0:c6:0a:29:33
+    state: started
+  register: mac_address_2
+
+- name: mac_address (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    mac_address: 92:d0:c6:0a:29:44
+    state: started
+    stop_timeout: 1
+  register: mac_address_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - mac_address_1 is changed
+    - mac_address_2 is not changed
+    - mac_address_3 is changed
 
 ####################################################################
 ## memory ##########################################################
 ####################################################################
 
-# TODO: - memory
+- name: memory
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory: 64M
+    state: started
+  register: memory_1
+
+- name: memory (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory: 64M
+    state: started
+  register: memory_2
+
+- name: memory (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory: 48M
+    state: started
+    stop_timeout: 1
+  register: memory_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - memory_1 is changed
+    - memory_2 is not changed
+    - memory_3 is changed
 
 ####################################################################
 ## memory_reservation ##############################################
 ####################################################################
 
-# TODO: - memory_reservation
+- name: memory_reservation
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory_reservation: 64M
+    state: started
+  register: memory_reservation_1
+
+- name: memory_reservation (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory_reservation: 64M
+    state: started
+  register: memory_reservation_2
+
+- name: memory_reservation (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory_reservation: 48M
+    state: started
+    stop_timeout: 1
+  register: memory_reservation_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - memory_reservation_1 is changed
+    - memory_reservation_2 is not changed
+    - memory_reservation_3 is changed
 
 ####################################################################
 ## memory_swap #####################################################
 ####################################################################
 
-# TODO: - memory_swap
+- name: memory_swap
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory_swap: 64M
+    state: started
+  register: memory_swap_1
+
+- name: memory_swap (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory_swap: 64M
+    state: started
+  register: memory_swap_2
+
+- name: memory_swap (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory_swap: 48M
+    state: started
+    stop_timeout: 1
+  register: memory_swap_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - memory_swap_1 is changed
+    - memory_swap_2 is not changed
+    - memory_swap_3 is changed
 
 ####################################################################
 ## memory_swappiness ###############################################
 ####################################################################
 
-# TODO: - memory_swappiness
+- name: memory_swappiness
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory_swappiness: 40
+    state: started
+  register: memory_swappiness_1
+
+- name: memory_swappiness (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory_swappiness: 40
+    state: started
+  register: memory_swappiness_2
+
+- name: memory_swappiness (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    memory_swappiness: 60
+    state: started
+    stop_timeout: 1
+  register: memory_swappiness_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - memory_swappiness_1 is changed
+    - memory_swappiness_2 is not changed
+    - memory_swappiness_3 is changed
 
 ####################################################################
 ## network_mode ####################################################
@@ -799,7 +1278,45 @@
 ## privileged ######################################################
 ####################################################################
 
-# TODO: - privileged
+- name: privileged
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    privileged: yes
+    state: started
+  register: privileged_1
+
+- name: privileged (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    privileged: yes
+    state: started
+  register: privileged_2
+
+- name: privileged (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    privileged: no
+    state: started
+    stop_timeout: 1
+  register: privileged_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - privileged_1 is changed
+    - privileged_2 is not changed
+    - privileged_3 is changed
 
 ####################################################################
 ## published_ports #################################################
@@ -823,7 +1340,45 @@
 ## read_only #######################################################
 ####################################################################
 
-# TODO: - read_only
+- name: read_only
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    read_only: yes
+    state: started
+  register: read_only_1
+
+- name: read_only (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    read_only: yes
+    state: started
+  register: read_only_2
+
+- name: read_only (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    read_only: no
+    state: started
+    stop_timeout: 1
+  register: read_only_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - read_only_1 is changed
+    - read_only_2 is not changed
+    - read_only_3 is changed
 
 ####################################################################
 ## recreate ########################################################
@@ -853,7 +1408,45 @@
 ## shm_size ########################################################
 ####################################################################
 
-# TODO: - shm_size
+- name: shm_size
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    shm_size: 96M
+    state: started
+  register: shm_size_1
+
+- name: shm_size (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    shm_size: 96M
+    state: started
+  register: shm_size_2
+
+- name: shm_size (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    shm_size: 75M
+    state: started
+    stop_timeout: 1
+  register: shm_size_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - shm_size_1 is changed
+    - shm_size_2 is not changed
+    - shm_size_3 is changed
 
 ####################################################################
 ## stop_signal #####################################################
@@ -907,7 +1500,45 @@
 ## user ############################################################
 ####################################################################
 
-# TODO: - user
+- name: user
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    user: nobody
+    state: started
+  register: user_1
+
+- name: user (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    user: nobody
+    state: started
+  register: user_2
+
+- name: user (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    user: root
+    state: started
+    stop_timeout: 1
+  register: user_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - user_1 is changed
+    - user_2 is not changed
+    - user_3 is changed
 
 ####################################################################
 ## userns_mode #####################################################
@@ -943,4 +1574,42 @@
 ## working_dir #####################################################
 ####################################################################
 
-# TODO: - working_dir
+- name: working_dir
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    working_dir: /tmp
+    state: started
+  register: working_dir_1
+
+- name: working_dir (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -v -c "sleep 10m"'
+    name: "{{ cname }}"
+    working_dir: /tmp
+    state: started
+  register: working_dir_2
+
+- name: working_dir (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    working_dir: /
+    state: started
+    stop_timeout: 1
+  register: working_dir_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - working_dir_1 is changed
+    - working_dir_2 is not changed
+    - working_dir_3 is changed

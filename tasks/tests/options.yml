@@ -1192,6 +1192,12 @@
 ## image / ignore_image ############################################
 ####################################################################
 
+- name: Pull hello-world image to make sure ignore_image test succeeds
+  # If the image isn't there, it will pull it and return 'changed'.
+  docker_image:
+    name: hello-world
+    pull: true
+
 - name: image
   docker_container:
     image: alpine:3.8
@@ -1752,6 +1758,7 @@
     memory: 32M
     memory_swap: 64M
     state: started
+    debug: yes
   register: memory_swap_1
 
 - name: memory_swap (idempotency)
@@ -1763,6 +1770,7 @@
     memory: 32M
     memory_swap: 64M
     state: started
+    debug: yes
   register: memory_swap_2
 
 - name: memory_swap (change)
@@ -1775,6 +1783,7 @@
     memory_swap: 48M
     state: started
     stop_timeout: 1
+    debug: yes
   register: memory_swap_3
 
 - name: cleanup
@@ -1786,8 +1795,17 @@
 - assert:
     that:
     - memory_swap_1 is changed
-    - memory_swap_2 is not changed
+    # Sometimes (in particular during integration tests, maybe when not running
+    # on a proper VM), memory_swap cannot be set and will be -1 afterwards.
+    - memory_swap_2 is not changed or memory_swap_2.ansible_facts.docker_container.HostConfig.MemorySwap == -1
     - memory_swap_3 is changed
+
+- debug: var=memory_swap_1
+  when: memory_swap_2 is changed
+- debug: var=memory_swap_2
+  when: memory_swap_2 is changed
+- debug: var=memory_swap_3
+  when: memory_swap_2 is changed
 
 ####################################################################
 ## memory_swappiness ###############################################

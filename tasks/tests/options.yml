@@ -1153,6 +1153,8 @@
     image: alpine:3.8
     command: '/bin/sh -v -c "sleep 10m"'
     name: "{{ cname }}"
+    # Docker daemon does not accept memory_swap if memory is not specified
+    memory: 32M
     memory_swap: 64M
     state: started
   register: memory_swap_1
@@ -1162,6 +1164,8 @@
     image: alpine:3.8
     command: '/bin/sh -v -c "sleep 10m"'
     name: "{{ cname }}"
+    # Docker daemon does not accept memory_swap if memory is not specified
+    memory: 32M
     memory_swap: 64M
     state: started
   register: memory_swap_2
@@ -1171,6 +1175,8 @@
     image: alpine:3.8
     command: '/bin/sh -c "sleep 10m"'
     name: "{{ cname }}"
+    # Docker daemon does not accept memory_swap if memory is not specified
+    memory: 32M
     memory_swap: 48M
     state: started
     stop_timeout: 1

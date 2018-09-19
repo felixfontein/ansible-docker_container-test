@@ -5,9 +5,22 @@
     cname_h1: "{{ cname_prefix ~ '-options-h1' }}"
     cname_h2: "{{ cname_prefix ~ '-options-h2' }}"
     cname_h3: "{{ cname_prefix ~ '-options-h3' }}"
+    nname_1: "{{ cname_prefix ~ '-network-1' }}"
+    nname_2: "{{ cname_prefix ~ '-network-2' }}"
 - name: Registering container name
   set_fact:
     cnames: "{{ cnames }} + [cname, cname_h1, cname_h2, cname_h3]"
+    dnetworks: "{{ dnetworks }} + [nname_1, nname_2]"
+
+- name: Create networks
+  docker_network:
+    name: "{{ network_name }}"
+    state: present
+  loop:
+  - "{{ nname_1 }}"
+  - "{{ nname_2 }}"
+  loop_control:
+    loop_var: network_name
 
 ####################################################################
 ## auto_remove #####################################################
@@ -1824,13 +1837,121 @@
 ## network_mode ####################################################
 ####################################################################
 
-# TODO: - network_mode
+- name: network_mode
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    network_mode: host
+  register: network_mode_1
+
+- name: network_mode (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    network_mode: host
+  register: network_mode_2
+
+- name: network_mode (change)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    network_mode: none
+    stop_timeout: 1
+  register: network_mode_3
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - network_mode_1 is changed
+    - network_mode_2 is not changed
+    - network_mode_3 is changed
 
 ####################################################################
-## networks ########################################################
+## networks, purge_networks ########################################
 ####################################################################
 
-# TODO: - networks
+- name: networks, purge_networks
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    purge_networks: yes
+    networks:
+    - name: bridge
+    - name: "{{ nname_1 }}"
+  register: networks_1
+
+- name: networks, purge_networks (idempotency)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    purge_networks: yes
+    networks:
+    - name: bridge
+    - name: "{{ nname_1 }}"
+  register: networks_2
+
+- name: networks (less networks)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    networks:
+    - name: bridge
+  register: networks_3
+
+- name: networks, purge_networks (less networks)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    purge_networks: yes
+    networks:
+    - name: bridge
+  register: networks_4
+
+- name: networks, purge_networks (more networks)
+  docker_container:
+    image: alpine:3.8
+    command: '/bin/sh -c "sleep 10m"'
+    name: "{{ cname }}"
+    state: started
+    purge_networks: yes
+    networks:
+    - name: bridge
+    - name: "{{ nname_2 }}"
+    stop_timeout: 1
+  register: networks_5
+
+- name: cleanup
+  docker_container:
+    name: "{{ cname }}"
+    state: absent
+    stop_timeout: 1
+
+- assert:
+    that:
+    - networks_1 is changed
+    - networks_2 is not changed
+    - networks_3 is not changed
+    - networks_4 is changed
+    - networks_5 is changed
 
 ####################################################################
 ## oom_killer ######################################################
@@ -2099,12 +2220,6 @@
 ####################################################################
 
 # TODO: - pull
-
-####################################################################
-## purge_networks ##################################################
-####################################################################
-
-# TODO: - purge_networks
 
 ####################################################################
 ## read_only #######################################################
@@ -2383,3 +2498,18 @@
     - working_dir_1 is changed
     - working_dir_2 is not changed
     - working_dir_3 is changed
+
+####################################################################
+####################################################################
+####################################################################
+
+- name: Delete networks
+  docker_network:
+    name: "{{ network_name }}"
+    state: absent
+    force: yes
+  loop:
+  - "{{ nname_1 }}"
+  - "{{ nname_2 }}"
+  loop_control:
+    loop_var: network_name

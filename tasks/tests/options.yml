@@ -95,10 +95,10 @@
     - blkio_weight_3 is changed
 
 ####################################################################
-## cap_drop, capabilities ##########################################
+## capabilities ####################################################
 ####################################################################
 
-- name: capabilities, cap_drop
+- name: capabilities
   docker_container:
     image: alpine:3.8
     command: '/bin/sh -c "sleep 10m"'
@@ -106,11 +106,9 @@
     state: started
     capabilities:
     - sys_time
-    cap_drop:
-    - all
   register: capabilities_1
 
-- name: capabilities, cap_drop (idempotency)
+- name: capabilities (idempotency)
   docker_container:
     image: alpine:3.8
     command: '/bin/sh -c "sleep 10m"'
@@ -118,22 +116,18 @@
     state: started
     capabilities:
     - sys_time
-    cap_drop:
-    - all
   register: capabilities_2
 
-- name: capabilities, cap_drop (less)
+- name: capabilities (less)
   docker_container:
     image: alpine:3.8
     command: '/bin/sh -c "sleep 10m"'
     name: "{{ cname }}"
     state: started
     capabilities: []
-    cap_drop:
-    - all
   register: capabilities_3
 
-- name: capabilities, cap_drop (changed)
+- name: capabilities (changed)
   docker_container:
     image: alpine:3.8
     command: '/bin/sh -c "sleep 10m"'
@@ -141,8 +135,6 @@
     state: started
     capabilities:
     - setgid
-    cap_drop:
-    - all
     stop_timeout: 1
   register: capabilities_4
 

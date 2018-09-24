@@ -775,7 +775,7 @@
     - /bin/sh
     - "-v"
     - "-c"
-    - "sleep 10m"
+    - "'sleep 10m'"
     name: "{{ cname }}"
     state: started
   register: entrypoint_1
@@ -787,7 +787,7 @@
     - /bin/sh
     - "-v"
     - "-c"
-    - "sleep 10m"
+    - "'sleep 10m'"
     name: "{{ cname }}"
     state: started
   register: entrypoint_2
@@ -798,7 +798,7 @@
     entrypoint:
     - /bin/sh
     - "-c"
-    - "sleep 10m"
+    - "'sleep 10m'"
     name: "{{ cname }}"
     state: started
     stop_timeout: 1
@@ -810,7 +810,7 @@
     entrypoint:
     - /bin/sh
     - "-c"
-    - "sleep 5m"
+    - "'sleep 5m'"
     name: "{{ cname }}"
     state: started
     stop_timeout: 1

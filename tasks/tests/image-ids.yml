@@ -62,6 +62,7 @@
     name: "{{ cname }}"
     state: absent
     stop_timeout: 1
+  diff: no
 
 - assert:
     that:

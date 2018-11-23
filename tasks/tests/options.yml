@@ -88,14 +88,14 @@
     name: "{{ cname }}"
     state: started
     blkio_weight: 234
-    stop_timeout: 1
+    force_kill: yes
   register: blkio_weight_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -153,14 +153,14 @@
     - setgid
     cap_drop:
     - all
-    stop_timeout: 1
+    force_kill: yes
   register: capabilities_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -196,14 +196,14 @@
     command: '/bin/sh -c "sleep 10m"'
     name: "{{ cname }}"
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: command_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -241,14 +241,14 @@
     name: "{{ cname }}"
     cpu_period: 50000
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: cpu_period_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -286,14 +286,14 @@
     name: "{{ cname }}"
     cpu_quota: 50000
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: cpu_quota_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -331,14 +331,14 @@
     name: "{{ cname }}"
     cpu_shares: 1100
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: cpu_shares_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -376,7 +376,7 @@
     name: "{{ cname }}"
     cpuset_cpus: 1
     state: started
-    stop_timeout: 1
+    force_kill: yes
   # This will fail if the system the test is run on doesn't have
   # multiple CPUs/cores available.
   ignore_errors: yes
@@ -386,7 +386,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -424,7 +424,7 @@
     name: "{{ cname }}"
     cpuset_mems: 1
     state: started
-    stop_timeout: 1
+    force_kill: yes
   # This will fail if the system the test is run on doesn't have
   # multiple MEMs available.
   ignore_errors: yes
@@ -434,7 +434,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -468,7 +468,7 @@
     image: alpine:3.8
     name: "{{ cname }}"
     state: stopped
-    stop_timeout: 1
+    force_kill: yes
     debug: yes
   register: debug_3
 
@@ -477,7 +477,7 @@
     name: "{{ cname }}"
     state: absent
     debug: yes
-    stop_timeout: 1
+    force_kill: yes
   register: debug_4
 
 - assert:
@@ -600,14 +600,14 @@
     devices:
     - "/dev/random:/dev/virt-random:rwm"
     - "/dev/null:/dev/virt-null:rwm"
-    stop_timeout: 1
+    force_kill: yes
   register: devices_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -672,7 +672,7 @@
         rate: 10M
       - path: /dev/urandom
         rate: 5K
-    stop_timeout: 1
+    force_kill: yes
   register: device_read_bps_4
   ignore_errors: yes
 
@@ -680,7 +680,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -722,7 +722,7 @@
     state: started
     device_read_iops:
       - path: /dev/urandom
-        rate: 20
+        rate: "20"
       - path: /dev/random
         rate: 10
   register: device_read_iops_2
@@ -751,7 +751,7 @@
         rate: 30
       - path: /dev/urandom
         rate: 50
-    stop_timeout: 1
+    force_kill: yes
   register: device_read_iops_4
   ignore_errors: yes
 
@@ -759,7 +759,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -821,7 +821,7 @@
     device_write_iops:
       - path: /dev/urandom
         rate: 100
-    stop_timeout: 1
+    force_kill: yes
   register: device_write_limit_3
   ignore_errors: yes
 
@@ -829,7 +829,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -892,7 +892,7 @@
     dns_opts:
     - "timeout:10"
     - no-check-names
-    stop_timeout: 1
+    force_kill: yes
   register: dns_opts_4
   ignore_errors: yes
 
@@ -900,7 +900,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -962,14 +962,14 @@
     dns_search_domains:
     - ansible.com
     - example.com
-    stop_timeout: 1
+    force_kill: yes
   register: dns_search_domains_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1025,14 +1025,14 @@
     dns_servers:
     - 8.8.8.8
     - 9.9.9.9
-    stop_timeout: 1
+    force_kill: yes
   register: dns_servers_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1071,14 +1071,14 @@
     name: "{{ cname }}"
     domainname: example.org
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: domainname_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1136,7 +1136,7 @@
     - "'sleep 10m'"
     name: "{{ cname }}"
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: entrypoint_4
 
 - name: entrypoint (other parameters)
@@ -1148,14 +1148,14 @@
     - "'sleep 5m'"
     name: "{{ cname }}"
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: entrypoint_5
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1211,14 +1211,14 @@
     env:
       TEST1: val1
       TEST3: val3
-    stop_timeout: 1
+    force_kill: yes
   register: env_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1254,7 +1254,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1307,14 +1307,14 @@
     etc_hosts:
       example.com: 1.2.3.4
       example.us: 1.2.3.5
-    stop_timeout: 1
+    force_kill: yes
   register: etc_hosts_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1369,14 +1369,14 @@
     exposed_ports:
     - 1234
     - 1235
-    stop_timeout: 1
+    force_kill: yes
   register: exposed_ports_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1437,14 +1437,14 @@
     groups:
     - 1234
     - 2345
-    stop_timeout: 1
+    force_kill: yes
   register: groups_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1472,7 +1472,7 @@
       timeout: 2s
       interval: 0h0m2s3ms4us
       retries: 2
-    stop_timeout: 1
+    force_kill: yes
   register: healthcheck_1
   ignore_errors: yes
 
@@ -1490,7 +1490,7 @@
       timeout: 2s
       interval: 0h0m2s3ms4us
       retries: 2
-    stop_timeout: 1
+    force_kill: yes
   register: healthcheck_2
   ignore_errors: yes
 
@@ -1508,7 +1508,7 @@
       timeout: 3s
       interval: 0h1m2s3ms4us
       retries: 3
-    stop_timeout: 1
+    force_kill: yes
   register: healthcheck_3
   ignore_errors: yes
 
@@ -1518,7 +1518,7 @@
     command: '/bin/sh -c "sleep 10m"'
     name: "{{ cname }}"
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: healthcheck_4
   ignore_errors: yes
 
@@ -1531,7 +1531,7 @@
     healthcheck:
       test:
       - NONE
-    stop_timeout: 1
+    force_kill: yes
   register: healthcheck_5
   ignore_errors: yes
 
@@ -1544,7 +1544,7 @@
     healthcheck:
       test:
       - NONE
-    stop_timeout: 1
+    force_kill: yes
   register: healthcheck_6
   ignore_errors: yes
 
@@ -1556,7 +1556,7 @@
     state: started
     healthcheck:
       test: "sleep 1"
-    stop_timeout: 1
+    force_kill: yes
   register: healthcheck_7
   ignore_errors: yes
 
@@ -1568,7 +1568,7 @@
     state: started
     healthcheck:
       test: "sleep 1"
-    stop_timeout: 1
+    force_kill: yes
   register: healthcheck_8
   ignore_errors: yes
 
@@ -1576,7 +1576,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1625,14 +1625,14 @@
     name: "{{ cname }}"
     hostname: me.example.org
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: hostname_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1672,7 +1672,7 @@
     name: "{{ cname }}"
     init: no
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: init_3
   ignore_errors: yes
 
@@ -1680,7 +1680,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1724,14 +1724,14 @@
     name: "{{ cname }}"
     interactive: no
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: interactive_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1779,14 +1779,14 @@
     image: hello-world
     name: "{{ cname }}"
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: image_change
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1838,14 +1838,14 @@
     name: "{{ cname }}"
     state: started
     ipc_mode: private
-    stop_timeout: 1
+    force_kill: yes
   register: ipc_mode_3
 
 - name: cleanup
   docker_container:
     name: "{{ container_name }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   loop:
   - "{{ cname }}"
   - "{{ cname_h1 }}"
@@ -1888,14 +1888,14 @@
     name: "{{ cname }}"
     kernel_memory: 6M
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: kernel_memory_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -1955,14 +1955,14 @@
     labels:
       ansible.test.1: hello
       ansible.test.3: ansible
-    stop_timeout: 1
+    force_kill: yes
   register: labels_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2030,14 +2030,14 @@
     links:
     - "{{ cname_h1 }}:test1"
     - "{{ cname_h3 }}:test3"
-    stop_timeout: 1
+    force_kill: yes
   register: links_4
 
 - name: cleanup
   docker_container:
     name: "{{ container_name }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   loop:
   - "{{ cname }}"
   - "{{ cname_h1 }}"
@@ -2083,14 +2083,14 @@
     name: "{{ cname }}"
     state: started
     log_driver: syslog
-    stop_timeout: 1
+    force_kill: yes
   register: log_driver_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2148,14 +2148,14 @@
     log_options:
       labels: production_status
       max-file: 1
-    stop_timeout: 1
+    force_kill: yes
   register: log_options_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2194,14 +2194,14 @@
     name: "{{ cname }}"
     mac_address: 92:d0:c6:0a:29:44
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: mac_address_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2239,14 +2239,14 @@
     name: "{{ cname }}"
     memory: 48M
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: memory_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2284,14 +2284,14 @@
     name: "{{ cname }}"
     memory_reservation: 48M
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: memory_reservation_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2337,7 +2337,7 @@
     memory: 32M
     memory_swap: 48M
     state: started
-    stop_timeout: 1
+    force_kill: yes
     debug: yes
   register: memory_swap_3
 
@@ -2345,7 +2345,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2392,14 +2392,14 @@
     name: "{{ cname }}"
     memory_swappiness: 60
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: memory_swappiness_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2437,14 +2437,14 @@
     name: "{{ cname }}"
     state: started
     network_mode: none
-    stop_timeout: 1
+    force_kill: yes
   register: network_mode_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2513,14 +2513,14 @@
       networks:
       - name: bridge
       - name: "{{ nname_2 }}"
-      stop_timeout: 1
+      force_kill: yes
     register: networks_5
 
   - name: cleanup
     docker_container:
       name: "{{ cname }}"
       state: absent
-      stop_timeout: 1
+      force_kill: yes
     diff: no
 
   - assert:
@@ -2564,7 +2564,7 @@
     name: "{{ cname }}"
     oom_killer: no
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: oom_killer_3
   ignore_errors: yes
 
@@ -2572,7 +2572,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2618,7 +2618,7 @@
     name: "{{ cname }}"
     oom_score_adj: 7
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: oom_score_adj_3
   ignore_errors: yes
 
@@ -2626,7 +2626,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2658,7 +2658,7 @@
     name: "{{ cname }}"
     state: started
     paused: yes
-    stop_timeout: 1
+    force_kill: yes
   register: paused_1
 
 - name: inspect paused
@@ -2672,7 +2672,7 @@
     name: "{{ cname }}"
     state: started
     paused: yes
-    stop_timeout: 1
+    force_kill: yes
   register: paused_3
 
 - name: paused (continue)
@@ -2682,7 +2682,7 @@
     name: "{{ cname }}"
     state: started
     paused: no
-    stop_timeout: 1
+    force_kill: yes
   register: paused_4
 
 - name: inspect paused
@@ -2693,7 +2693,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2745,14 +2745,14 @@
     name: "{{ cname }}"
     state: started
     pid_mode: host
-    stop_timeout: 1
+    force_kill: yes
   register: pid_mode_3
 
 - name: cleanup
   docker_container:
     name: "{{ container_name }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   loop:
   - "{{ cname }}"
   - "{{ cname_h1 }}"
@@ -2802,14 +2802,14 @@
     name: "{{ cname }}"
     privileged: no
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: privileged_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2863,14 +2863,14 @@
     published_ports:
     - 1234
     - 2345
-    stop_timeout: 1
+    force_kill: yes
   register: published_ports_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2915,14 +2915,14 @@
     name: "{{ cname }}"
     read_only: no
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: read_only_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -2941,7 +2941,7 @@
     command: '/bin/sh -c "sleep 10m"'
     name: "{{ cname }}"
     state: present
-    stop_timeout: 1
+    force_kill: yes
   register: recreate_1
 
 - name: recreate (created, recreate)
@@ -2951,7 +2951,7 @@
     name: "{{ cname }}"
     recreate: yes
     state: present
-    stop_timeout: 1
+    force_kill: yes
   register: recreate_2
 
 - name: recreate (started)
@@ -2960,7 +2960,7 @@
     command: '/bin/sh -c "sleep 10m"'
     name: "{{ cname }}"
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: recreate_3
 
 - name: recreate (started, recreate)
@@ -2970,14 +2970,14 @@
     name: "{{ cname }}"
     recreate: yes
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: recreate_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - debug: var=recreate_1
@@ -3005,7 +3005,7 @@
     command: '/bin/sh -c "sleep 10m"'
     name: "{{ cname }}"
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: restart_1
 
 - name: restart (restart)
@@ -3015,14 +3015,14 @@
     name: "{{ cname }}"
     restart: yes
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: restart_2
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - debug: var=restart_1
@@ -3063,14 +3063,14 @@
     name: "{{ cname }}"
     restart_policy: unless-stopped
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: restart_policy_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3111,14 +3111,14 @@
     restart_policy: on-failure
     restart_retries: 2
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: restart_retries_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3155,7 +3155,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3230,14 +3230,14 @@
     security_opts:
     - "label:disable"
     - "no-new-privileges"
-    stop_timeout: 1
+    force_kill: yes
   register: security_opts_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3276,14 +3276,14 @@
     name: "{{ cname }}"
     shm_size: 75M
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: shm_size_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3321,14 +3321,14 @@
     name: "{{ cname }}"
     stop_signal: 9
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: stop_signal_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3373,7 +3373,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3440,7 +3440,7 @@
     sysctls:
       net.ipv4.icmp_echo_ignore_all: 1
       net.ipv6.conf.default.accept_redirects: 0
-    stop_timeout: 1
+    force_kill: yes
   register: sysctls_4
   ignore_errors: yes
 
@@ -3448,7 +3448,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3509,14 +3509,14 @@
     tmpfs:
     - "/test1:rw,noexec,nosuid,size=65536k"
     - "/test3:rw,noexec,nosuid,size=65536k"
-    stop_timeout: 1
+    force_kill: yes
   register: tmpfs_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3561,14 +3561,14 @@
     name: "{{ cname }}"
     tty: no
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: tty_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3622,14 +3622,14 @@
     ulimits:
     - "nofile:1234:1234"
     - "sigpending:100:200"
-    stop_timeout: 1
+    force_kill: yes
   register: ulimits_4
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3668,14 +3668,14 @@
     name: "{{ cname }}"
     user: root
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: user_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3715,7 +3715,7 @@
     name: "{{ cname }}"
     userns_mode: ""
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: userns_mode_3
   ignore_errors: yes
 
@@ -3723,7 +3723,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3769,7 +3769,7 @@
     name: "{{ cname }}"
     uts: ""
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: uts_3
   ignore_errors: yes
 
@@ -3777,7 +3777,7 @@
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3827,14 +3827,14 @@
     name: "{{ cname }}"
     volume_driver: /
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: volume_driver_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3888,7 +3888,7 @@
     volumes:
     - "/tmp:/tmp"
     - "/tmp:/somewhereelse:ro,Z"
-    stop_timeout: 1
+    force_kill: yes
   register: volumes_4
 
 - name: volumes (different modes)
@@ -3900,14 +3900,14 @@
     volumes:
     - "/tmp:/tmp"
     - "/tmp:/somewhereelse:ro"
-    stop_timeout: 1
+    force_kill: yes
   register: volumes_5
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
@@ -3961,14 +3961,14 @@
     name: "{{ cname }}"
     state: started
     volumes_from: "{{ cname_h2 }}"
-    stop_timeout: 1
+    force_kill: yes
   register: volumes_from_3
 
 - name: cleanup
   docker_container:
     name: "{{ container_name }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   loop:
   - "{{ cname }}"
   - "{{ cname_h1 }}"
@@ -4012,14 +4012,14 @@
     name: "{{ cname }}"
     working_dir: /
     state: started
-    stop_timeout: 1
+    force_kill: yes
   register: working_dir_3
 
 - name: cleanup
   docker_container:
     name: "{{ cname }}"
     state: absent
-    stop_timeout: 1
+    force_kill: yes
   diff: no
 
 - assert:
